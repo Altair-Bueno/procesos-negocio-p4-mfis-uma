@@ -1,0 +1,8 @@
+sload ex-process-2.maude 
+
+----set print attribute on .
+----rew PROCESS .
+
+search [2] PROCESS =>* < o : Process | tokens: empty, Atts:AttributeSet > .
+search [,1000] PROCESS =>! < o : Process | tokens: Tks:Set{Token}, Atts:AttributeSet > such that Tks:Set{Token} =/= empty .
+
