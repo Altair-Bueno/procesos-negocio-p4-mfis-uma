@@ -1,3 +1,5 @@
+sload bpmn.maude 
+
 mod BPMN-EX is
   pr BPMN-SEM . ---- module with the semantics of BPMN
 

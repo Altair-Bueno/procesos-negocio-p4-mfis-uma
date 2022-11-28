@@ -1,4 +1,4 @@
-sload bpmn-no-msgs.maude 
+sload bpmn.maude 
 ---- bpmn.maude is the name of the file in which the BPMN-SEM module is defined. 
 ---- bpmn-no-msgs.maude  is the name of the file with the spec without messages/events
 
