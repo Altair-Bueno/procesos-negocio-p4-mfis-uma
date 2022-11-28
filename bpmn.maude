@@ -1,3 +1,63 @@
-mod BPMN-SEM is
+sload time.maude 
 
+fmod BPMN is 
+    sorts Gateway Resource Process Node Id Flow Token String .
+endfm
+
+view Resource from TRIV to BPMN is
+  sort Elt to Resource .
+endv
+
+view Token from TRIV to BPMN is
+  sort Elt to Token .
+endv
+
+view Id from TRIV to BPMN is
+  sort Elt to Id .
+endv
+
+view Node from TRIV to BPMN is
+  sort Elt to Node .
+endv
+
+
+
+mod BPMN-SEM is
+    inc CONFIGURATION .
+    pr POSRAT-TIME-DOMAIN-WITH-INF .
+    pr BPMN .
+    pr SET{Resource} .
+    pr SET{Token} .
+    pr SET{Id} .
+    pr SET{Node} .
+
+    subsort Process < Cid .
+
+    op Process : -> Process .
+    op nodes : Set{Node} -> Attribute [gather (&)].
+
+    op id : String -> Id [ctor] .
+
+    op exclusive : -> Gateway [ctor] .
+    op parallel : -> Gateway [ctor] .
+    
+    op start : Id Id -> Node [ctor] .
+    op end : Id Id -> Node [ctor] .
+    op task : Id String Id Id Time Set{Id} -> Node [ctor] .
+    op split : Id Gateway Id Set{Id} -> Node [ctor] .
+    op merge : Id Gateway Set{Id} Id -> Node [ctor] .
+    
+    op resource : Id Nat Nat -> Resource [ctor] .
+    op flow : Id Time -> Flow [ctor] .
+    op token : Id Time -> Token [ctor] .
+
+    
 endm 
+
+eof 
+
+class Process | nodes: Set{Node},
+                flows: Set{Flow},
+                tokens: Set{Token},
+                gtime: Time,
+                resources: Set{Resource} .
