@@ -82,17 +82,19 @@ mod BPMN-SEM is
   var Atts : AttributeSet .
   var VProcess : Process .
 
+  *** Gestión del tiempo
   eq delta((token(ID, DURACION), TOKENSET),T) = token(ID, DURACION monus T), delta(TOKENSET, T) .
   eq delta(empty, T) = empty .
 
   eq mte(empty) = INF .
   eq mte((token(ID, DURACION), TOKENSET)) = min(DURACION,mte(TOKENSET)) .
-  
+
   crl [tick] : 
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > => 
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET,T), resources: RESOURCESET, gtime: GTIME plus T, Atts > 
     if T := mte(TOKENSET) /\ 0 < T .
 
+  *** Transiciones
   rl [start] : 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
@@ -101,8 +103,7 @@ mod BPMN-SEM is
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
-    > 
-    => 
+    > => 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
@@ -120,8 +121,7 @@ mod BPMN-SEM is
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
-    > 
-    => 
+    > => 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
@@ -130,7 +130,7 @@ mod BPMN-SEM is
       gtime: GTIME, 
       Atts 
     > .
-    
+
 endm 
 
 eof 
