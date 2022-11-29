@@ -1,7 +1,7 @@
 sload time.maude 
 
 fmod BPMN is 
-    sorts Gateway Resource Process Node Id Flow Token String .
+  sorts Gateway Resource Process Node Id Flow Token .
 endfm
 
 view Resource from TRIV to BPMN is
@@ -20,44 +20,120 @@ view Node from TRIV to BPMN is
   sort Elt to Node .
 endv
 
-
+view Flow from TRIV to BPMN is
+  sort Elt to Flow .
+endv
 
 mod BPMN-SEM is
-    inc CONFIGURATION .
-    pr POSRAT-TIME-DOMAIN-WITH-INF .
-    pr BPMN .
-    pr SET{Resource} .
-    pr SET{Token} .
-    pr SET{Id} .
-    pr SET{Node} .
+  inc CONFIGURATION .
+  pr POSRAT-TIME-DOMAIN-WITH-INF .
+  pr BPMN .
+  pr STRING .
+  pr SET{Resource} .
+  pr SET{Flow} .
+  pr SET{Token} .
+  pr SET{Id} .
+  pr SET{Node} .
 
-    subsort Process < Cid .
+  subsort Process < Cid .
 
-    op Process : -> Process .
-    op nodes : Set{Node} -> Attribute [gather (&)].
+  *** class Process | nodes: Set{Node}, flows: Set{Flow}, tokens: Set{Token}, gtime: Time, resources: Set{Resource} .
+  op Process : -> Process .
+  op nodes:_ : Set{Node} -> Attribute [gather (&)] .
+  op flows:_ : Set{Flow} -> Attribute [gather (&)] .
+  op tokens:_ : Set{Token} -> Attribute [gather (&)] .
+  op resources:_ : Set{Resource} -> Attribute [gather (&)] .
+  op gtime:_ : Time -> Attribute [gather (&)] .
 
-    op id : String -> Id [ctor] .
+  op id : String -> Id [ctor] .
 
-    op exclusive : -> Gateway [ctor] .
-    op parallel : -> Gateway [ctor] .
-    
-    op start : Id Id -> Node [ctor] .
-    op end : Id Id -> Node [ctor] .
-    op task : Id String Id Id Time Set{Id} -> Node [ctor] .
-    op split : Id Gateway Id Set{Id} -> Node [ctor] .
-    op merge : Id Gateway Set{Id} Id -> Node [ctor] .
-    
-    op resource : Id Nat Nat -> Resource [ctor] .
-    op flow : Id Time -> Flow [ctor] .
-    op token : Id Time -> Token [ctor] .
+  op exclusive : -> Gateway [ctor] .
+  op parallel : -> Gateway [ctor] .
+  
+  *** Tipos de nodo
+  *** start(Id nodo, Id flujo salida)
+  op start : Id Id -> Node [ctor] .
+  *** end(Id nodo, Id flujo de entrada)
+  op end : Id Id -> Node [ctor] .
+  *** task(Id nodo, Nombre de la tarea, Id flujo entrada, Id flujo salida, duración, conjunto de recursos)
+  op task : Id String Id Id Time Set{Id} -> Node [ctor] .
+  *** split(Id nodo, tipo puerta, Id flujo entrada, Ids flujos salida)
+  op split : Id Gateway Id Set{Id} -> Node [ctor] .
+  *** merge(Id nodo, tipo puerta, Ids flujos entrada, Id flujo salida)
+  op merge : Id Gateway Set{Id} Id -> Node [ctor] .
+  
+  *** resource(Id recurso, Cantidad, Disponible)
+  op resource : Id Nat Nat -> Resource [ctor] .
+  *** flow(Id flujo, Duración)
+  op flow : Id Time -> Flow [ctor] .
+  *** token(Id token, Temporizador)
+  op token : Id Time -> Token [ctor] . 
 
+  op delta : Process Time -> Process .
+  op delta : Set{Token} Time -> Set{Token} .
+  op mte : Process -> TimeInf .
+  op mte : Set{Token} -> TimeInf .
+
+  var GTIME T DURACION DURACION' : Time .
+  var ID ID' IDIN IDOUT : Id .
+  var O : Oid .
+  var NODESET : Set{Node} .
+  var FLOWSET : Set{Flow} .
+  var TOKENSET : Set{Token} .
+  var RESOURCESET : Set{Resource} .
+  var Atts : AttributeSet .
+  var VProcess : Process .
+
+  eq delta((token(ID, DURACION), TOKENSET),T) = token(ID, DURACION monus T), delta(TOKENSET, T) .
+  eq delta(empty, T) = empty .
+
+  eq mte(empty) = INF .
+  eq mte((token(ID, DURACION), TOKENSET)) = min(DURACION,mte(TOKENSET)) .
+
+  eq delta( < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > , T) = 
+    < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET, T), resources: RESOURCESET, gtime: GTIME plus T, Atts > .
+  eq mte( < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > ) = mte(TOKENSET) .
+
+  crl [tick] : VProcess => delta(VProcess, T) if T := mte(VProcess) /\ 0 < T .
+
+  rl [start] : 
+    < O : VProcess | 
+      nodes: NODESET, start(ID, IDOUT), 
+      flows: FLOWSET, flow(IDOUT, DURACION), 
+      tokens: TOKENSET, token(ID, 0), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > 
+    => 
+    < O : VProcess | 
+      nodes: NODESET, start(ID, IDOUT), 
+      flows: FLOWSET, flow(IDOUT, DURACION), 
+      tokens: TOKENSET, token(IDOUT, DURACION), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > .
+
+    rl [end] : 
+    < O : VProcess | 
+      nodes: NODESET, end(IDOUT, ID), 
+      flows: FLOWSET, flow(ID, DURACION), 
+      tokens: TOKENSET, token(ID, 0), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > 
+    => 
+    < O : VProcess | 
+      nodes: NODESET, start(ID, IDOUT), 
+      flows: FLOWSET, flow(IDOUT, DURACION), 
+      tokens: TOKENSET, token(IDOUT, 0), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > .
     
 endm 
 
 eof 
-
-class Process | nodes: Set{Node},
-                flows: Set{Flow},
-                tokens: Set{Token},
-                gtime: Time,
-                resources: Set{Resource} .
