@@ -69,9 +69,7 @@ mod BPMN-SEM is
   *** token(Id token, Temporizador)
   op token : Id Time -> Token [ctor] . 
 
-  op delta : Process Time -> Process .
   op delta : Set{Token} Time -> Set{Token} .
-  op mte : Process -> TimeInf .
   op mte : Set{Token} -> TimeInf .
 
   var GTIME T DURACION DURACION' : Time .
@@ -89,12 +87,11 @@ mod BPMN-SEM is
 
   eq mte(empty) = INF .
   eq mte((token(ID, DURACION), TOKENSET)) = min(DURACION,mte(TOKENSET)) .
-
-  eq delta( < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > , T) = 
-    < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET, T), resources: RESOURCESET, gtime: GTIME plus T, Atts > .
-  eq mte( < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > ) = mte(TOKENSET) .
-
-  crl [tick] : VProcess => delta(VProcess, T) if T := mte(VProcess) /\ 0 < T .
+  
+  crl [tick] : 
+    < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > => 
+    < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET,T), resources: RESOURCESET, gtime: GTIME plus T, Atts > 
+    if T := mte(TOKENSET) /\ 0 < T .
 
   rl [start] : 
     < O : VProcess | 
