@@ -75,6 +75,7 @@ mod BPMN-SEM is
   var GTIME T DURACION DURACION' : Time .
   var ID ID' IDIN IDOUT : Id .
   var O : Oid .
+  var STRING : String .
   var NODESET : Set{Node} .
   var FLOWSET : Set{Flow} .
   var TOKENSET : Set{Token} .
@@ -95,11 +96,11 @@ mod BPMN-SEM is
     if T := mte(TOKENSET) /\ 0 < T .
 
   *** Transiciones
-  rl [start] : 
+  crl [start] : 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
-      tokens: TOKENSET, token(ID, 0), 
+      tokens: TOKENSET, token(ID, T), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
@@ -111,13 +112,14 @@ mod BPMN-SEM is
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
-    > .
+    > 
+    if T = zero .
 
-    rl [end] : 
+    crl [end] : 
     < O : VProcess | 
       nodes: NODESET, end(IDOUT, ID), 
       flows: FLOWSET, flow(ID, DURACION), 
-      tokens: TOKENSET, token(ID, 0), 
+      tokens: TOKENSET, token(ID, T), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
@@ -125,11 +127,12 @@ mod BPMN-SEM is
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
-      tokens: TOKENSET, token(IDOUT, 0), 
+      tokens: TOKENSET, token(IDOUT, zero), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
-    > .
+    > 
+    if T = zero .
 
 endm 
 
