@@ -72,14 +72,17 @@ mod BPMN-SEM is
   op delta : Set{Token} Time -> Set{Token} .
   op mte : Set{Token} -> TimeInf .
 
-  var GTIME T DURACION DURACION' : Time .
-  var ID ID' IDIN IDOUT : Id .
+  vars GTIME T DURACION DURACION' : Time .
+  vars ID ID' IDIN IDOUT : Id .
+  vars IDINSET IDOUTSET : Id .
   var O : Oid .
   var STRING : String .
   var NODESET : Set{Node} .
   var FLOWSET : Set{Flow} .
   var TOKENSET : Set{Token} .
-  var RESOURCESET : Set{Resource} .
+  vars RESOURCESET RESOURCESET' : Set{Resource} .
+  var GATEWAY : Gateway .
+  var taskName : String .
   var Atts : AttributeSet .
   var VProcess : Process .
 
@@ -125,9 +128,66 @@ mod BPMN-SEM is
       Atts 
     > => 
     < O : VProcess | 
-      nodes: NODESET, start(ID, IDOUT), 
+      nodes: NODESET, end(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
       tokens: TOKENSET, token(IDOUT, zero), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > 
+    if T = zero .
+
+    crl [enter-task] : 
+    < O : VProcess | 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      flows: FLOWSET, flow(IDIN, DURACION'), 
+      tokens: TOKENSET, token(IDIN, T), 
+      resources: RESOURCESET', 
+      gtime: GTIME, 
+      Atts 
+    > => 
+    < O : VProcess | 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      flows: FLOWSET, flow(IDIN, DURACION'), 
+      tokens: TOKENSET, token(ID, DURACION), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > 
+    if T = zero .
+
+    crl [exit-task] : 
+    < O : VProcess | 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      flows: FLOWSET, flow(IDOUT, DURACION'), 
+      tokens: TOKENSET, token(ID, T), 
+      resources: RESOURCESET', 
+      gtime: GTIME, 
+      Atts 
+    > => 
+    < O : VProcess | 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      flows: FLOWSET, flow(IDOUT, DURACION'), 
+      tokens: TOKENSET, token(IDOUT, DURACION'), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > 
+    if T = zero .
+
+    crl [split] : 
+    < O : VProcess | 
+      nodes: NODESET, split(ID, exclusive, IDIN, IDOUTSET), 
+      flows: FLOWSET, flow(IDIN, DURACION)
+      tokens: TOKENSET, token(ID, T), 
+      resources: RESOURCESET, 
+      gtime: GTIME, 
+      Atts 
+    > => 
+    < O : VProcess | 
+      nodes: NODESET, split(ID, exclusive, IDIN, IDOUTSET), 
+      flows: FLOWSET, 
+      tokens: TOKENSET, generateTokens(IDOUTSET), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
