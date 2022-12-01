@@ -86,6 +86,7 @@ mod BPMN-SEM is
   var taskName : String .
   var Atts : AttributeSet .
   var VProcess : Process .
+  vars QUANTITY AVAILABLE : Nat .
 
   *** Gestión del tiempo
   eq delta((token(ID, DURACION), TOKENSET),T) = token(ID, DURACION monus T), delta(TOKENSET, T) .
@@ -131,46 +132,62 @@ mod BPMN-SEM is
     < O : VProcess | 
       nodes: NODESET, end(ID, IDIN), 
       flows: FLOWSET, flow(IDIN, DURACION), 
-      tokens: TOKENSET, token(ID, zero), 
+      tokens: TOKENSET, 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
     > 
     if T = zero .
 
+    op enter-task-consume-resource : Set{Id} Set{Resource} -> Set{Resource} .
+    eq enter-task-consume-resource(empty, RESOURCESET) = RESOURCESET .
+    eq enter-task-consume-resource((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) =
+       enter-task-consume-resource(IDSET, RESOURCESET), resource(ID,QUANTITY, sd(AVAILABLE, 1)) .
+
+    op enter-task-resource-available : Set{Id} Set{Resource} -> Bool .
+    eq enter-task-resource-available(empty, RESOURCESET) = true .
+    ceq enter-task-resource-available((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) = 
+        enter-task-resource-available(IDSET,RESOURCESET) if AVAILABLE >= 1 .
+    eq enter-task-resource-available(IDSET,RESOURCESET) = false [owise] .
+
     crl [enter-task] : 
     < O : VProcess | 
-      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, IDSET), 
       flows: FLOWSET, flow(IDIN, DURACION'), 
       tokens: TOKENSET, token(IDIN, T), 
-      resources: RESOURCESET', 
+      resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
-      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, IDSET), 
       flows: FLOWSET, flow(IDIN, DURACION'), 
       tokens: TOKENSET, token(ID, DURACION), 
-      resources: RESOURCESET', 
+      resources: enter-task-consume-resource(IDSET, RESOURCESET), 
       gtime: GTIME, 
       Atts 
     > 
-    if T = zero .
+    if T = zero /\ enter-task-resource-available(IDSET, RESOURCESET) .
+
+    op exit-task-free : Set{Id} Set{Resource} -> Set{Resource} .
+    eq exit-task-free((ID,IDSET),(resource(ID,QUANTITY,AVAILABLE), RESOURCESET)) = 
+       exit-task-free(IDSET,RESOURCESET), resource(ID,QUANTITY, s AVAILABLE) .
+    eq exit-task-free(IDSET,RESOURCESET) = RESOURCESET [owise] .
 
     crl [exit-task] : 
     < O : VProcess | 
-      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, IDSET), 
       flows: FLOWSET, flow(IDOUT, DURACION'), 
       tokens: TOKENSET, token(ID, T), 
-      resources: RESOURCESET', 
+      resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
-      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, RESOURCESET), 
+      nodes: NODESET, task(ID, taskName, IDIN, IDOUT, DURACION, IDSET), 
       flows: FLOWSET, flow(IDOUT, DURACION'), 
       tokens: TOKENSET, token(IDOUT, DURACION'), 
-      resources: RESOURCESET', 
+      resources: exit-task-free(IDSET,RESOURCESET), 
       gtime: GTIME, 
       Atts 
     > 
