@@ -74,13 +74,12 @@ mod BPMN-SEM is
 
   vars GTIME T DURACION DURACION' : Time .
   vars ID ID' IDIN IDOUT IDSPLIT IDMERGE : Id .
-  vars IDINSET IDOUTSET : Id .
+  vars IDINSET IDOUTSET IDSET : Set{Id} .
   var O : Oid .
   var STRING : String .
   var NODESET : Set{Node} .
   var FLOWSET : Set{Flow} .
   var TOKENSET : Set{Token} .
-  var IDSET : Set{Id} .
   vars RESOURCESET RESOURCESET' : Set{Resource} .
   var GATEWAY : Gateway .
   var taskName : String .
@@ -100,22 +99,51 @@ mod BPMN-SEM is
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET,T), resources: RESOURCESET, gtime: GTIME plus T, Atts > 
     if T := mte(TOKENSET) /\ 0 < T .
 
+  *** Operaciones para las transiciones
+  op enter-task-consume-resource : Set{Id} Set{Resource} -> Set{Resource} .
+  eq enter-task-consume-resource(empty, RESOURCESET) = RESOURCESET .
+  eq enter-task-consume-resource((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) =
+      enter-task-consume-resource(IDSET, RESOURCESET), resource(ID,QUANTITY, sd(AVAILABLE, 1)) .
+
+  op enter-task-resource-available : Set{Id} Set{Resource} -> Bool .
+  eq enter-task-resource-available(empty, RESOURCESET) = true .
+  ceq enter-task-resource-available((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) = 
+      enter-task-resource-available(IDSET,RESOURCESET) if AVAILABLE >= 1 .
+  eq enter-task-resource-available(IDSET,RESOURCESET) = false [owise] .
+
+  op exit-task-free : Set{Id} Set{Resource} -> Set{Resource} .
+  eq exit-task-free((ID,IDSET),(resource(ID,QUANTITY,AVAILABLE), RESOURCESET)) = 
+     exit-task-free(IDSET,RESOURCESET), resource(ID,QUANTITY, s AVAILABLE) .
+  eq exit-task-free(IDSET,RESOURCESET) = RESOURCESET [owise] .
+
+  op split-parallel-gen-token : Set{Id} Set{Flow} -> Set{Token} .
+  eq split-parallel-gen-token((ID, IDSET), (flow(ID, DURACION), FLOWSET)) = 
+     split-parallel-gen-token(IDSET, FLOWSET), token(ID, DURACION) .
+  eq split-parallel-gen-token(IDSET, FLOWSET) = empty [owise] .
+  
+  op merge-parallel-all-ready : Set{Id} Set{Token} -> Bool .
+  eq merge-parallel-all-ready(empty, TOKENSET) = true .
+  ceq merge-parallel-all-ready((ID, IDSET), (token(ID,DURACION), TOKENSET)) = 
+      merge-parallel-all-ready(IDSET, TOKENSET) if DURACION = zero .
+  eq merge-parallel-all-ready(IDSET,TOKENSET) = false [owise] .
+
+  op merge-parallel-consume-tokens : Set{Id} Set{Token} -> Set{Token} .
+  eq merge-parallel-consume-tokens(empty,TOKENSET) = TOKENSET .
+  eq merge-parallel-consume-tokens((ID, IDINSET), (token(ID, DURACION), TOKENSET)) = 
+     merge-parallel-consume-tokens(IDINSET,TOKENSET) .
+
   *** Transiciones
   crl [start] : 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
       tokens: TOKENSET, token(ID, T), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
       nodes: NODESET, start(ID, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION), 
       tokens: TOKENSET, token(IDOUT, DURACION), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > 
     if T = zero .
@@ -125,30 +153,15 @@ mod BPMN-SEM is
       nodes: NODESET, end(ID, IDIN), 
       flows: FLOWSET, flow(IDIN, DURACION), 
       tokens: TOKENSET, token(IDIN, T), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
       nodes: NODESET, end(ID, IDIN), 
       flows: FLOWSET, flow(IDIN, DURACION), 
       tokens: TOKENSET, 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > 
     if T = zero .
-
-    op enter-task-consume-resource : Set{Id} Set{Resource} -> Set{Resource} .
-    eq enter-task-consume-resource(empty, RESOURCESET) = RESOURCESET .
-    eq enter-task-consume-resource((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) =
-       enter-task-consume-resource(IDSET, RESOURCESET), resource(ID,QUANTITY, sd(AVAILABLE, 1)) .
-
-    op enter-task-resource-available : Set{Id} Set{Resource} -> Bool .
-    eq enter-task-resource-available(empty, RESOURCESET) = true .
-    ceq enter-task-resource-available((ID,IDSET), (resource(ID, QUANTITY,AVAILABLE), RESOURCESET)) = 
-        enter-task-resource-available(IDSET,RESOURCESET) if AVAILABLE >= 1 .
-    eq enter-task-resource-available(IDSET,RESOURCESET) = false [owise] .
 
     crl [enter-task] : 
     < O : VProcess | 
@@ -156,7 +169,6 @@ mod BPMN-SEM is
       flows: FLOWSET, flow(IDIN, DURACION'), 
       tokens: TOKENSET, token(IDIN, T), 
       resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
@@ -164,15 +176,9 @@ mod BPMN-SEM is
       flows: FLOWSET, flow(IDIN, DURACION'), 
       tokens: TOKENSET, token(ID, DURACION), 
       resources: enter-task-consume-resource(IDSET, RESOURCESET), 
-      gtime: GTIME, 
       Atts 
     > 
     if T = zero /\ enter-task-resource-available(IDSET, RESOURCESET) .
-
-    op exit-task-free : Set{Id} Set{Resource} -> Set{Resource} .
-    eq exit-task-free((ID,IDSET),(resource(ID,QUANTITY,AVAILABLE), RESOURCESET)) = 
-       exit-task-free(IDSET,RESOURCESET), resource(ID,QUANTITY, s AVAILABLE) .
-    eq exit-task-free(IDSET,RESOURCESET) = RESOURCESET [owise] .
 
     crl [exit-task] : 
     < O : VProcess | 
@@ -180,7 +186,6 @@ mod BPMN-SEM is
       flows: FLOWSET, flow(IDOUT, DURACION'), 
       tokens: TOKENSET, token(ID, T), 
       resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
@@ -188,50 +193,36 @@ mod BPMN-SEM is
       flows: FLOWSET, flow(IDOUT, DURACION'), 
       tokens: TOKENSET, token(IDOUT, DURACION'), 
       resources: exit-task-free(IDSET,RESOURCESET), 
-      gtime: GTIME, 
       Atts 
     > 
     if T = zero .
 
     crl [split-exclusive] : 
     < O : VProcess | 
-      nodes: NODESET, split(IDSPLIT, exclusive, ID, (IDOUTSET, IDOUT)), 
-      flows: FLOWSET, flow(ID, DURACION), flow(IDOUT, DURACION'),
-      tokens: TOKENSET, token(ID, T), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
+      nodes: NODESET, split(ID, exclusive, IDIN, (IDOUT, IDSET) ), 
+      flows: FLOWSET, flow(IDIN, DURACION), flow(IDOUT, DURACION'),
+      tokens: TOKENSET, token(IDIN, T), 
       Atts 
     > => 
     < O : VProcess | 
-      nodes: NODESET, split(IDSPLIT, exclusive, ID, (IDOUTSET, IDOUT)), 
-      flows: FLOWSET, flow(ID, DURACION), flow(IDOUT, DURACION'),
+      nodes: NODESET, split(ID, exclusive, IDIN, (IDOUT, IDSET) ), 
+      flows: FLOWSET, flow(IDIN, DURACION), flow(IDOUT, DURACION'),
       tokens: TOKENSET, token(IDOUT, DURACION'), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     >
     if T = zero .
-
-    op split-parallel-gen-token : Set{Id} Set{Flow} -> Set{Token} .
-    eq split-parallel-gen-token((ID, IDSET), (flow(ID, DURACION), FLOWSET)) = 
-       token(ID, DURACION), split-parallel-gen-token(IDSET, FLOWSET) .
-    eq split-parallel-gen-token(IDSET, FLOWSET) = empty [owise] .
 
     crl [split-parallel] : 
     < O : VProcess | 
       nodes: NODESET, split(IDSPLIT, parallel, ID, IDOUTSET), 
       flows: FLOWSET, flow(ID, DURACION),
       tokens: TOKENSET, token(ID, T), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
       nodes: NODESET, split(IDSPLIT, parallel, ID, IDOUTSET), 
       flows: FLOWSET, flow(ID, DURACION),
       tokens: TOKENSET, split-parallel-gen-token(IDOUTSET, FLOWSET), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     >
     if T = zero .
@@ -241,46 +232,27 @@ mod BPMN-SEM is
       nodes: NODESET, merge(IDMERGE, exclusive, (IDINSET, ID), IDOUT), 
       flows: FLOWSET, flow(ID, DURACION), flow(IDOUT, DURACION'),
       tokens: TOKENSET, token(ID, T), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
       nodes: NODESET, merge(IDMERGE, exclusive, (IDINSET, ID), IDOUT), 
       flows: FLOWSET, flow(ID, DURACION), flow(IDOUT, DURACION'),
       tokens: TOKENSET, token(IDOUT, DURACION'), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     >
     if T = zero .
-
-    op merge-parallel-all-ready : Set{Id} Set{Token} -> Bool .
-    eq merge-parallel-all-ready(empty, TOKENSET) = true .
-    ceq merge-parallel-all-ready((ID, IDSET), (token(ID,DURACION), TOKENSET)) = 
-        merge-parallel-all-ready(IDSET, TOKENSET)
-    if DURACION = zero .
-    eq merge-parallel-all-ready(IDSET,TOKENSET) = false [owise] .
-
-    op merge-parallel-consume-tokens : Set{Id} Set{Token} -> Set{Token} .
-    eq merge-parallel-consume-tokens(empty,TOKENSET) = TOKENSET .
-    eq merge-parallel-consume-tokens((ID, IDINSET), (token(ID, DURACION), TOKENSET)) = merge-parallel-consume-tokens(IDINSET,TOKENSET) .
 
     crl [merge-parallel] : 
     < O : VProcess | 
       nodes: NODESET, merge(IDMERGE, parallel, IDINSET, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION),
       tokens: TOKENSET, 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
       nodes: NODESET, merge(IDMERGE, parallel, IDINSET, IDOUT), 
       flows: FLOWSET, flow(IDOUT, DURACION),
       tokens: merge-parallel-consume-tokens(IDINSET,TOKENSET), token(IDOUT, DURACION), 
-      resources: RESOURCESET, 
-      gtime: GTIME, 
       Atts 
     >
     if merge-parallel-all-ready(IDINSET, TOKENSET) .
