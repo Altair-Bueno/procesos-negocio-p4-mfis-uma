@@ -120,17 +120,17 @@ mod BPMN-SEM is
 
     crl [end] : 
     < O : VProcess | 
-      nodes: NODESET, end(IDOUT, ID), 
-      flows: FLOWSET, flow(ID, DURACION), 
-      tokens: TOKENSET, token(ID, T), 
+      nodes: NODESET, end(ID, IDIN), 
+      flows: FLOWSET, flow(IDIN, DURACION), 
+      tokens: TOKENSET, token(IDIN, T), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
     > => 
     < O : VProcess | 
-      nodes: NODESET, end(ID, IDOUT), 
-      flows: FLOWSET, flow(IDOUT, DURACION), 
-      tokens: TOKENSET, token(IDOUT, zero), 
+      nodes: NODESET, end(ID, IDIN), 
+      flows: FLOWSET, flow(IDIN, DURACION), 
+      tokens: TOKENSET, token(ID, zero), 
       resources: RESOURCESET, 
       gtime: GTIME, 
       Atts 
