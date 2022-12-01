@@ -88,11 +88,13 @@ mod BPMN-SEM is
   vars QUANTITY AVAILABLE : Nat .
 
   *** Gestión del tiempo
-  eq delta((token(ID, DURACION), TOKENSET),T) = token(ID, DURACION monus T), delta(TOKENSET, T) .
+  ceq delta((token(ID, DURACION), TOKENSET),T) = token(ID, DURACION monus T), delta(TOKENSET, T) if DURACION >= T .
+  ceq delta((token(ID, DURACION), TOKENSET),T) = token(ID, zero), delta(TOKENSET, T) if DURACION < T .
   eq delta(empty, T) = empty .
 
   eq mte(empty) = INF .
-  eq mte((token(ID, DURACION), TOKENSET)) = min(DURACION,mte(TOKENSET)) .
+  ceq mte((token(ID, DURACION), TOKENSET)) = mte(TOKENSET) if DURACION = zero .
+  eq mte((token(ID, DURACION), TOKENSET)) = min(mte(TOKENSET), DURACION) [owise] .
 
   crl [tick] : 
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > => 

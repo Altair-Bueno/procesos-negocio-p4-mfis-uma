@@ -72,8 +72,10 @@ mod BPMN-EX is
                     resource(id("drone"), 1, 1)) > .
 endm
 
-search [,100] PROCESS =>* < o : Process | tokens: empty, Atts:AttributeSet > .
+eof
 
-search [,100] PROCESS =>! < o : Process | tokens: Tks:Set{Token}, Atts:AttributeSet > such that Tks:Set{Token} =/= empty .
+search PROCESS =>* < o : Process | tokens: empty, gtime: T:Time, Atts:AttributeSet > s.t. T:Time <= 100 .
+*** Situación de bloqueo: No se pueden aplicar más reglas y no es un nodo terminal
+search PROCESS =>! < o : Process | tokens: Tk:Token,Tks:Set{Token}, gtime: T:Time, Atts:AttributeSet > s.t. T:Time <= 100 .
 
 eof
