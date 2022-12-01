@@ -71,3 +71,9 @@ mod BPMN-EX is
                     resource(id("car"), 1, 1), 
                     resource(id("drone"), 1, 1)) > .
 endm
+
+search [,100] PROCESS =>* < o : Process | tokens: empty, Atts:AttributeSet > .
+
+search [,100] PROCESS =>! < o : Process | tokens: Tks:Set{Token}, Atts:AttributeSet > such that Tks:Set{Token} =/= empty .
+
+eof
