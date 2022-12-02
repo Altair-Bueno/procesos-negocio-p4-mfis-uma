@@ -99,7 +99,7 @@ mod BPMN-SEM is
   crl [tick] : 
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: TOKENSET, resources: RESOURCESET, gtime: GTIME, Atts > => 
     < O : VProcess | nodes: NODESET, flows: FLOWSET, tokens: delta(TOKENSET,T), resources: RESOURCESET, gtime: GTIME plus T, Atts > 
-    if T := mte(TOKENSET) /\ 0 < T .
+    if T := mte(TOKENSET) /\ GTIME + T < 100 /\ 0 < T .
 
   *** Operaciones para las transiciones
   op enter-task-consume-resource : Set{Id} Set{Resource} -> Set{Resource} .
