@@ -28,7 +28,7 @@ Nuestra especificación original de las reglas de reescritura es no terminante,
 ya que un proceso puede entrar en un bucle infinito de ejecución aumentando el
 tiempo hasta el infinito. Para poder limitar la búsqueda de soluciones, se ha
 modificado la regla `[tick]` para que el reloj solo pueda alcanzar el valor de
-100 ud de tiempo
+100 ud de tiempo.
 
 Como se puede observar, se encuentran 26 resultados, debido a que la tarea
 `"Search products"` está dentro en un bucle, haciendo que haya diversos estados
@@ -36,7 +36,7 @@ de salida aunque sólo existan tres nodos finales. Sin embargo, podemos observar
 como todas estas soluciones acaban en en alguno de estos nodos finales.
 
 Mostramos a continuación las salidas del comando `show path labels` para varios
-estados solución con comentarios adicionales
+estados solución con comentarios adicionales.
 
 ## Finalización en nodo final `"n05"` - estado 21
 
@@ -168,3 +168,19 @@ end
 `search PROCESS =>! < o : Process | tokens: Tks:Set{Token}, gtime: T:Time, Atts:AttributeSet > s.t. Tks:Set{Token} =/= empty /\ mte(Tks:Set{Token}) + T:Time <= 100`
 
 ![Resultado del comando](source/2_2.png)
+
+Consideramos que un estado es de bloqueo si se cumplen las siguientes
+condiciones:
+
+- No se pueden aplicar más reglas: El sistema no puede transitar
+- Nos encontramos en un flujo, tarea o nodo no final (existen tokens por
+  consumir en el conjunto de tokens)
+- No hemos alcanzado la cota superior de 100ud de tiempo
+
+Podemos observar como Maude no encuentra solución para la búsqueda, demostrando
+así que cualquier ejecución del modelo en 100ud de tiempo no se bloquea.
+
+No obstante, esta verificación no nos proporciona información sobre el
+comportamiento del sistema más allá de dicha cota. Para solucionarlo, podemos
+crear una abstracción del sistema en el que retrasamos continuamente el tiempo
+global del sistema.

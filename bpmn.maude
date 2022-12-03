@@ -262,3 +262,651 @@ mod BPMN-SEM is
 endm 
 
 eof 
+
+sload ex-process-3.maude
+
+*** Ningún elemento en el conjunto de tokens (salidas del grafo)
+search PROCESS =>* < o : Process | tokens: empty, gtime: T:Time, Atts:AttributeSet > .
+
+*** Situación de bloqueo: 
+*** - No se pueden aplicar más reglas
+*** - No es un nodo terminal 
+*** - Anterior a nuestro límite de 100ud de tiempo
+search PROCESS =>! < o : Process | tokens: Tks:Set{Token}, gtime: T:Time, Atts:AttributeSet > s.t. Tks:Set{Token} =/= empty /\ mte(Tks:Set{Token}) + T:Time <= 100 . 
+
+==========================================
+search in BPMN-EX : PROCESS =>* < o : Process | Atts:AttributeSet,tokens: empty,gtime: T:Time > .
+
+Solution 1 (state 21)
+states: 22  rewrites: 272 in 5ms cpu (5ms real) (50727 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 14
+
+Solution 2 (state 42)
+states: 43  rewrites: 569 in 11ms cpu (11ms real) (49603 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 22
+
+Solution 3 (state 79)
+states: 80  rewrites: 1127 in 22ms cpu (32ms real) (50238 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 30
+
+Solution 4 (state 97)
+states: 98  rewrites: 1415 in 27ms cpu (38ms real) (50809 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 32
+
+Solution 5 (state 171)
+states: 172  rewrites: 3319 in 54ms cpu (66ms real) (60632 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 38
+
+Solution 6 (state 207)
+states: 208  rewrites: 4293 in 68ms cpu (80ms real) (63113 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 40
+
+Solution 7 (state 320)
+states: 321  rewrites: 7657 in 112ms cpu (125ms real) (68111 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 46
+
+Solution 8 (state 365)
+states: 366  rewrites: 8797 in 128ms cpu (141ms real) (68642 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 48
+
+Solution 9 (state 511)
+states: 512  rewrites: 12923 in 186ms cpu (200ms real) (69461 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 54
+
+Solution 10 (state 562)
+states: 563  rewrites: 14197 in 204ms cpu (218ms real) (69438 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 56
+
+Solution 11 (state 638)
+states: 639  rewrites: 16175 in 233ms cpu (248ms real) (69215 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 58
+
+Solution 12 (state 712)
+states: 713  rewrites: 18407 in 264ms cpu (279ms real) (69597 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 62
+
+Solution 13 (state 763)
+states: 764  rewrites: 19681 in 282ms cpu (298ms real) (69595 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 64
+
+Solution 14 (state 839)
+states: 840  rewrites: 21659 in 311ms cpu (327ms real) (69536 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 66
+
+Solution 15 (state 913)
+states: 914  rewrites: 23891 in 341ms cpu (357ms real) (69948 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 70
+
+Solution 16 (state 964)
+states: 965  rewrites: 25165 in 359ms cpu (376ms real) (69922 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 72
+
+Solution 17 (state 1040)
+states: 1041  rewrites: 27143 in 388ms cpu (405ms real) (69780 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 74
+
+Solution 18 (state 1114)
+states: 1115  rewrites: 29375 in 419ms cpu (436ms real) (70039 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 78
+
+Solution 19 (state 1165)
+states: 1166  rewrites: 30649 in 438ms cpu (455ms real) (69952 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 80
+
+Solution 20 (state 1241)
+states: 1242  rewrites: 32627 in 466ms cpu (484ms real) (69886 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 82
+
+Solution 21 (state 1315)
+states: 1316  rewrites: 34859 in 497ms cpu (515ms real) (70030 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 86
+
+Solution 22 (state 1366)
+states: 1367  rewrites: 36133 in 517ms cpu (535ms real) (69873 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 88
+
+Solution 23 (state 1442)
+states: 1443  rewrites: 38111 in 546ms cpu (565ms real) (69739 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 90
+
+Solution 24 (state 1516)
+states: 1517  rewrites: 40343 in 577ms cpu (596ms real) (69856 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 94
+
+Solution 25 (state 1567)
+states: 1568  rewrites: 41617 in 596ms cpu (615ms real) (69819 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 96
+
+Solution 26 (state 1643)
+states: 1644  rewrites: 43595 in 624ms cpu (644ms real) (69765 rewrites/second)
+Atts:AttributeSet --> nodes: (start(id("n00"), id("f00")), end(id("n05"), id("f06")), end(id("n08"), id("f13")), end(id("n25"), id(
+    "f28")), split(id("n04"), exclusive, id("f03"), (id("f04"), id("f05"), id("f06"))), split(id("n10"), exclusive, id("f08"), (id(
+    "f09"), id("f10"))), split(id("n13"), parallel, id("f29"), (id("f17"), id("f21"))), split(id("n15"), parallel, id("f11"), (id(
+    "f14"), id("f15"), id("f16"))), split(id("n20"), exclusive, id("f22"), (id("f23"), id("f24"))), merge(id("n02"), exclusive, (
+    id("f01"), id("f04")), id("f02")), merge(id("n17"), parallel, (id("f15"), id("f17")), id("f18")), merge(id("n19"), parallel, (
+    id("f19"), id("f20")), id("f22")), merge(id("n23"), exclusive, (id("f25"), id("f26")), id("f27")), merge(id("n24"), parallel, (
+    id("f21"), id("f27")), id("f28")), task(id("n01"), "Sign in", id("f00"), id("f01"), 2, empty), task(id("n03"),
+    "Search products", id("f02"), id("f03"), 2, empty), task(id("n06"), "Make an order", id("f05"), id("f07"), 2, empty), task(id(
+    "n07"), "Fill in feedback form", id("f12"), id("f13"), 2, empty), task(id("n09"), "Check availability", id("f07"), id("f08"),
+    2, id("clerk")), task(id("n11"), "Cancel order", id("f09"), id("f12"), 2, id("clerk")), task(id("n12"), "Pay for order", id(
+    "f14"), id("f29"), 2, empty), task(id("n14"), "Confirm order", id("f10"), id("f11"), 2, id("clerk")), task(id("n16"),
+    "Prepare parcel", id("f16"), id("f19"), 2, id("worker")), task(id("n18"), "Payment validation", id("f18"), id("f20"), 2,
+    empty), task(id("n21"), "Deliver by drone", id("f23"), id("f25"), 2, id("drone")), task(id("n22"), "Deliver by car", id("f24"),
+    id("f26"), 2, (id("car"), id("delivery man")))),flows: (flow(id("f00"), 2), flow(id("f01"), 2), flow(id("f02"), 2), flow(id(
+    "f03"), 2), flow(id("f04"), 2), flow(id("f05"), 2), flow(id("f06"), 2), flow(id("f07"), 2), flow(id("f08"), 2), flow(id("f09"),
+    2), flow(id("f10"), 2), flow(id("f11"), 2), flow(id("f12"), 2), flow(id("f13"), 2), flow(id("f14"), 2), flow(id("f15"), 2),
+    flow(id("f16"), 2), flow(id("f17"), 2), flow(id("f18"), 2), flow(id("f19"), 2), flow(id("f20"), 2), flow(id("f21"), 2), flow(
+    id("f22"), 2), flow(id("f23"), 2), flow(id("f24"), 2), flow(id("f25"), 2), flow(id("f26"), 2), flow(id("f27"), 2), flow(id(
+    "f28"), 2), flow(id("f29"), 2)),resources: (resource(id("car"), 1, 1), resource(id("clerk"), 1, 1), resource(id(
+    "delivery man"), 1, 1), resource(id("drone"), 1, 1), resource(id("worker"), 1, 1))
+T:Time --> 98
+
+No more solutions.
+states: 1708  rewrites: 45830 in 660ms cpu (680ms real) (69409 rewrites/second)
+==========================================
+search in BPMN-EX : PROCESS =>! < o : Process | Atts:AttributeSet,tokens: Tks:Set{Token},gtime: T:Time > such that Tks:Set{Token}
+    =/= (empty).Set{Token} = true /\ T:Time + mte(Tks:Set{Token}) <= 100 = true .
+
+No solution.
+states: 1708  rewrites: 46080 in 629ms cpu (650ms real) (73176 rewrites/second)
+Maude> 
